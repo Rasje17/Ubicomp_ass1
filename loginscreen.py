@@ -49,6 +49,5 @@ class Loginscreen(tk.Frame):
     
     
     def login(self):
-        #implement login feature somehow
-        #send to controller.show_frame("CildrenInOutScreen")
+        self.controller.frames["CildrenInOutScreen"].initiate_transistion("")
         self.controller.show_frame("CildrenInOutScreen")

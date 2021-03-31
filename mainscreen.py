@@ -57,7 +57,20 @@ class Mainscreen(tk.Frame):
         self.not_parant_btn.grid(row=3, column=3)
 
     def keyfab_login(self):
-        print(self.keyfab_inp.get())
+        foundparent = None
+        for parent in self.controller.parents:
+            if parent.key_fob == self.keyfab_inp.get():
+                foundparent = parent
+        
+        if foundparent:
+            self.keyfab_inp.select_clear()
+            self.controller.frames["CildrenInOutScreen"].initiate_transistion(foundparent)
+            self.controller.show_frame("CildrenInOutScreen")
+        else:
+            print("unkonw keyfob:" + self.keyfab_inp.get())
+            self.keyfab_inp.select_clear()
+
+    
         #login with the id written in self.keyfab_inp.get()
 
     def parent_login(self):

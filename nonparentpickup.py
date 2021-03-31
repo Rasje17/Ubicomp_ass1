@@ -25,14 +25,15 @@ class NonParentPickupScreen(tk.Frame):
 
         self.employee_id_label.grid(row=1, column=0, pady=10)
 
-        self.employee_id_entry = tk.Entry(
+        self.keyfab_inp = tk.Entry(
             self
         )
-        self.employee_id_entry.grid(row=1, column=1, pady=10)
+        self.keyfab_inp.grid(row=1, column=1, pady=10)
 
         self.authorize_btn = tk.Button(
             self,
-            text="Employee Authorize"
+            text="Employee Authorize",
+            command = self.authorize
         )
         self.authorize_btn.grid(row=2, column=0, pady=50, padx=10)
 
@@ -43,3 +44,18 @@ class NonParentPickupScreen(tk.Frame):
         )
 
         self.back_to_main_btn.grid(row=2, column=1, pady=50, padx=100)
+
+    def authorize(self):
+        found_Employee = None
+        for employee in self.controller.employees:
+            if employee.key_fob == self.keyfab_inp.get():
+                found_Employee = employee
+        
+        if found_Employee:
+            self.keyfab_inp.select_clear()
+            self.controller.frames["CildrenInOutScreen"].initiate_transistion(self.name_entry.get())
+            self.controller.show_frame("CildrenInOutScreen")
+        else:
+            print("unkonw keyfob:" + self.keyfab_inp.get())
+            self.keyfab_inp.select_clear()
+

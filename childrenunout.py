@@ -1,7 +1,10 @@
 import tkinter as tk
+from cild_parent import Parent
+from child import Child
 
 class CildrenInOutScreen(tk.Frame):
     def __init__(self, parent, controller):
+        #setting up gui:
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller=controller
@@ -24,7 +27,7 @@ class CildrenInOutScreen(tk.Frame):
             selectmode = tk.MULTIPLE
             )
         
-        self.populate_listbox()
+        #self.populate_listbox()
         
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.child_listbox.pack()
@@ -54,16 +57,59 @@ class CildrenInOutScreen(tk.Frame):
         )
         self.return_btn.grid(row=2, column=5, sticky="nsew")
 
+        #logic things
+        self.pickup_person = None
+        self.parentpikup = False
+        self.child_list = []
+
+    def initiate_transistion(self, parent):
+        self.pickup_person = parent
+        if(isinstance(self.pickup_person, Parent)):
+            self.parentpikup = True
+        else:
+            self.parentpikup = False
+        self.populate_listbox()
+
     def populate_listbox(self):
-        for i in range (100):
-            self.child_listbox.insert(tk.END, "child nr" + str(i))
+        #populate own childlist
+        print(self.parentpikup)
+        if(self.parentpikup):
+            for i in self.pickup_person.children:
+                for j in self.controller.daycare.children:
+                    if (i == j.child_id):
+                        self.child_list.append(j)
+        else:
+            for child in self.controller.daycare.children:
+                self.child_list.append(child)
+
+
+        for i in self.child_list:
+            self.child_listbox.insert(tk.END, i.name)
 
     def check_in(self):
-        pass
+        for child in self.getselectedchildren():
+            self.controller.daycare.check_in(child)
+            print("present children:")
+            print(str(self.controller.daycare.present_children))
+            self.return_to_main()
+        
 
     def check_out(self):
-        pass
+        for child in self.getselectedchildren():
+            self.controller.daycare.check_out(child)
+            print("present children:")
+            print(str(self.controller.daycare.present_children))
+            self.return_to_main()
 
     def return_to_main(self):
-        #clear user login
+        self.pickup_person = None
+        self.parentpikup = False
+        self.child_list = []
+        self.child_listbox.delete(0,tk.END)
         self.controller.show_frame("Mainscreen")
+
+    def getselectedchildren(self):
+        retlist=[]
+        for i in self.child_listbox.curselection():
+            retlist.append(self.child_list[i])
+        return retlist 
